@@ -4,21 +4,21 @@ This is a command-line-based Todo List application written in C++. It allows you
 
 ## **Features**
 
-    Add Tasks:
+ ###   Add Tasks:
     Add a task with a description, due date, and priority level.
-  View Tasks:
+###  View Tasks:
     Display all tasks or only completed tasks.
-    Update Tasks: 
+ ###   Update Tasks: 
     Modify the description, due date, and priority of existing tasks.
-    Delete Tasks:
+###    Delete Tasks:
    Remove tasks by ID.
-    Mark as Completed: 
+   ### Mark as Completed: 
    Mark tasks as completed by ID.
-   Search Tasks:
+ ###  Search Tasks:
   Find tasks by ID.
-    Filter Tasks:
+ ###   Filter Tasks:
    Filter tasks by priority or due date.
-   Count Tasks:
+ ###  Count Tasks:
    Display the total number of tasks, completed tasks, and incomplete tasks.
-    Data Persistence:
+  ###  Data Persistence:
    Saves tasks to a file (todo.txt) and reloads them when the program is restarted.
