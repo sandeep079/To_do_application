@@ -59,12 +59,3 @@ TodoListApp/
     Provide better cross-platform support for clearing the console.
     Implement a GUI version.
 
-# License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-Contributions
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-# Author
-
-    Your Name - Your GitHub Profile
