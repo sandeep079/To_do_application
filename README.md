@@ -22,3 +22,49 @@ This is a command-line-based Todo List application written in C++. It allows you
    Display the total number of tasks, completed tasks, and incomplete tasks.
   ###  Data Persistence:
    Saves tasks to a file (todo.txt) and reloads them when the program is restarted.
+   # **How to Run**
+   Clone the repository:
+
+git clone https://github.com/yourusername/TodoListApp.git
+cd TodoListApp
+
+Compile the program:
+
+g++ -o todo_list_app todo_list_app.cpp
+
+Run the program:
+
+    ./todo_list_app
+
+    Note: The program uses a text file (todo.txt) to store tasks. Ensure that the file exists in the same directory as the executable, or it will be created automatically on first run.
+
+# Requirements
+
+    A C++ compiler (e.g., g++ or clang++)
+    Operating System: This program is designed for use on Windows (due to the use of system("cls")), but it can be modified for other systems by handling console clearing differently.
+
+# File Structure
+
+TodoListApp/
+│
+├── todo_list_app.cpp      # Main source code
+├── todo.txt               # File where tasks are stored (auto-generated)
+├── README.md              # Project documentation
+└── .gitignore             # Git ignore file (optional)
+
+# Future Enhancements
+
+    Add the ability to search for tasks by description or due date.
+    Improve date validation to include checks for leap years, month length, etc.
+    Provide better cross-platform support for clearing the console.
+    Implement a GUI version.
+
+# License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+Contributions
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+# Author
+
+    Your Name - Your GitHub Profile
