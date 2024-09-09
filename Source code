@@ -1,0 +1,318 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iomanip>
+#include <limits>
+#include <algorithm>
+using namespace std;
+class Task {
+public:
+int id;
+string description;
+bool completed;
+string dueDate;
+int priority; // 1 = Low, 2 = Medium, 3 = High
+Task(int id, string desc, string date, int prio)
+: id(id), description(desc), completed(false),
+dueDate(date), priority(prio) {}
+void display() const {
+cout << "| " << setw(4) << id << " | "
+<< setw(30) << description.substr(0, 30) << " | "
+<< setw(10) << dueDate << " | "
+<< setw(10) << (completed ? "Yes" : "No") << " | "
+<< setw(8) << (priority == 1 ? "Low" : priority == 2 ?
+"Medium" : "High") << " |" << endl;
+}
+};
+class TodoList {
+private:
+vector<Task> tasks;
+int nextID;
+void loadTasks() {
+ifstream fin("todo.txt");
+if (fin) {
+int id, completed, priority;
+string desc, date;
+while (fin >> id) {
+fin.ignore();
+getline(fin, desc);
+fin >> completed >> ws;
+getline(fin, date);
+fin >> priority;
+tasks.emplace_back(id, desc, date, priority);
+tasks.back().completed = completed;
+nextID = max(nextID, id + 1);
+}
+}
+}
+void saveTasks() const {
+ofstream fout("todo.txt");
+for (const auto& task : tasks) {
+fout << task.id << ’\n’
+<< task.description << ’\n’
+<< (task.completed ? 1 : 0) << ’\n’
+<< task.dueDate << ’\n’
+<< task.priority << ’\n’;
+}
+}
+int getValidatedChoice(int min, int max) const {
+int choice;
+while (true) {
+cin >> choice;
+if (!cin.fail() && choice >= min && choice <= max) {
+cin.ignore(numeric_limits<streamsize>::max(), ’\n’);
+return choice;
+}
+cin.clear();
+cin.ignore(numeric_limits<streamsize>::max(), ’\n’);
+cout << "Invalid choice. Please enter a number between "
+<< min << " and " << max << ": ";
+}
+}
+string getValidatedDate() const {
+string date;
+while (true) {
+cin >> date;
+if (isValidDate(date)) {
+return date;
+}
+cout << "Invalid date format. Please enter in YYYY-MM-DD format: ";
+}
+}
+bool isValidDate(const string& date) const {
+if (date.size() != 10 || date[4] != ’-’ || date[7] != ’-’) {
+return false;
+}
+for (char ch : date) {
+if (!isdigit(ch) && ch != ’-’) {
+return false;
+}
+}
+return true;
+}
+void displayHeader() const {
+cout << "+------+--------------------------------+------------+
+cout << "| ID |
+Task
+| Due Date |
+cout << "+------+--------------------------------+------------+
+}+------------+----------+" << endl;
+Completed | Priority |" << endl;
+------------+----------+" << endl;
+void displayFooter() const {
+cout << "+------+--------------------------------+------------+----------
+}
+public:
+TodoList() : nextID(1) {
+loadTasks();
+}
+void banner() const {
+cout << "==============================================" << endl;
+cout << "\t\tMy Todo List" << endl;
+cout << "==============================================" << endl;
+}
+void addTask() {
+system("cls");
+banner();
+string desc, date;
+int priority;
+cout << "Enter task description: ";
+cin.ignore();
+getline(cin, desc);
+cout << "Enter due date (YYYY-MM-DD): ";
+date = getValidatedDate();
+cout << "Enter priority (1 = Low, 2 = Medium, 3 = High): ";
+priority = getValidatedChoice(1, 3);
+tasks.emplace_back(nextID++, desc, date, priority);
+saveTasks();
+cout << "\nTask added successfully!" << endl;
+system("pause");
+}
+void showTasks(bool completed = false) const {
+system("cls");
+banner();
+cout << (completed ? "Completed Tasks:" : "All Tasks:") << endl;
+displayHeader();
+for (const auto& task : tasks) {
+if (task.completed == completed) {
+task.display();
+}
+}
+displayFooter();
+system("pause");
+}
+void searchTask() const {
+system("cls");
+banner();
+int id;
+cout << "Enter task ID: ";
+id = getValidatedChoice(1, nextID - 1);
+displayHeader();
+for (const auto& task : tasks) {
+if (task.id == id) {
+task.display();
+displayFooter();
+system("pause");
+return;
+}
+}
+displayFooter();
+cout << "Task not found." << endl;
+system("pause");
+}
+void deleteTask() {
+system("cls");
+banner();
+int id;
+cout << "Enter task ID to delete: ";
+id = getValidatedChoice(1, nextID - 1);
+for (const auto& task : tasks) {
+if (task.id == id) {
+cout << "Task found:\n";
+displayHeader();
+task.display();
+displayFooter();
+cout << "Are you sure you want to delete this task? (yes/no): ";
+string confirmation;
+cin >> confirmation;
+if (confirmation == "yes") {
+tasks.erase(remove_if(tasks.begin(), tasks.end(),
+[id](const Task& task) { return task.id == id; }),
+tasks.end());
+saveTasks();
+cout << "\nTask deleted successfully!" << endl;
+} else {
+cout << "\nTask deletion cancelled." << endl;
+}
+system("pause");
+return;
+}
+}
+cout << "Task not found." << endl;
+system("pause");
+}
+void updateTask() {
+system("cls");
+banner();
+int id;
+cout << "Enter task ID to update: ";
+id = getValidatedChoice(1, nextID - 1);
+for (auto& task : tasks) {
+if (task.id == id) {
+cout << "Task found:\n";
+displayHeader();
+task.display();
+displayFooter();
+cout << "Enter new task description: ";
+cin.ignore();
+getline(cin, task.description);
+cout << "Enter new due date (YYYY-MM-DD): ";
+task.dueDate = getValidatedDate();
+cout << "Enter new priority (1 = Low, 2 = Medium,
+3 = High): ";
+task.priority = getValidatedChoice(1, 3);
+saveTasks();
+cout << "\nTask updated successfully!" << endl;
+system("pause");
+return;
+}
+}
+cout << "Task not found." << endl;
+system("pause");
+}
+void markTaskCompleted() {
+system("cls");
+banner();
+int id;
+cout << "Enter task ID to mark as completed: ";
+id = getValidatedChoice(1, nextID - 1);
+for (auto& task : tasks) {
+if (task.id == id) {
+task.completed = true;
+saveTasks();
+cout << "\nTask marked as completed!" << endl;
+system("pause");
+return;
+}
+}
+cout << "Task not found." << endl;
+system("pause");
+}
+void filterTasks() const {
+system("cls");
+banner();
+cout << "Filter tasks by (1 = Priority, 2 = Due Date): ";
+int filterType = getValidatedChoice(1, 2);
+displayHeader();
+if (filterType == 1) {
+cout << "Enter priority to filter by (1 = Low, 2 = Medium,
+3 = High): ";
+int priority = getValidatedChoice(1, 3);
+for (const auto& task : tasks) {
+if (task.priority == priority) {
+task.display();
+}
+}
+} else {
+cout << "Enter due date to filter by (YYYY-MM-DD): ";
+string date = getValidatedDate();
+for (const auto& task : tasks) {
+if (task.dueDate == date) {
+task.display();
+}
+}
+}
+displayFooter();
+system("pause");
+}
+void countTasks() const {
+system("cls");
+banner();
+int total = tasks.size();
+int completed = count_if(tasks.begin(), tasks.end(), []
+(const Task& task) { return task.completed; });
+int notCompleted = total - completed;
+cout << "Total tasks: " << total << endl;
+cout << "Completed tasks: " << completed << endl;
+cout << "Not completed tasks: " << notCompleted << endl;
+system("pause");
+}
+void showMenu() {
+while (true) {
+system("cls");
+banner();
+cout << "1. Add Task" << endl;
+cout << "2. Show All Tasks" << endl;
+cout << "3. Show Completed Tasks" << endl;
+cout << "4. Search Task" << endl;
+cout << "5. Delete Task" << endl;
+cout << "6. Update Task" << endl;
+cout << "7. Mark Task as Completed" << endl;
+cout << "8. Filter Tasks" << endl;
+cout << "9. Count Tasks" << endl;
+cout << "10. Exit" << endl;
+cout << "Enter your choice: ";
+int choice = getValidatedChoice(1, 10);
+switch (choice) {
+case 1: addTask(); break;
+case 2: showTasks(); break;
+case 3: showTasks(true); break;
+case 4: searchTask(); break;
+case 5: deleteTask(); break;
+case 6: updateTask(); break;
+case 7: markTaskCompleted(); break;
+case 8: filterTasks(); break;
+case 9: countTasks(); break;
+case 10: return;
+default: cout << "Invalid choice. Please try again."
+<< endl; break;
+}
+}
+}
+};
+int main() {
+TodoList todoList;
+todoList.showMenu();
+return 0;
+}
