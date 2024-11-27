@@ -25,7 +25,7 @@ This is a command-line-based Todo List application written in C++. It allows you
    # **How to Run**
    Clone the repository:
 
-git clone https://github.com/yourusername/TodoListApp.git
+git clone https://github.com/sandeep079/TodoListApp.git
 cd TodoListApp
 
 Compile the program:
